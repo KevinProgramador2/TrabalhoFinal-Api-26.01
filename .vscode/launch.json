@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-TrabalhoFinalApplication<trabalhoFinal>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "br.serratec.com.trabalhofinal.TrabalhoFinalApplication",
+            "projectName": "trabalhoFinal",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
