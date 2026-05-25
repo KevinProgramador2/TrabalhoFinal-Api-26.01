@@ -22,32 +22,27 @@ public class VeiculoController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-            .body(service.inserir(veiculo));
-}
                 .body(service.inserir(veiculo));
     }
 
-@GetMapping
-public ResponseEntity<List<Veiculo>> listar() {
     @GetMapping
     public ResponseEntity<List<Veiculo>> listar() {
 
         return ResponseEntity.ok(service.listar());
     }
 
-@PutMapping("/{id}")
-public Veiculo update(@PathVariable Long id,
-                      @RequestBody Veiculo veiculo) {
+    @PutMapping("/{id}")
+    public Veiculo update(@PathVariable Long id,
+            @RequestBody Veiculo veiculo) {
 
-    return service.update(id, veiculo);
+        return service.update(id, veiculo);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletar(@PathVariable Long id) {
+
+        service.deletar(id);
+
+        return ResponseEntity.ok("Veiculo deletado com sucesso!");
+    }
 }
-
-@DeleteMapping("/{id}")
-public ResponseEntity<String> deletar(@PathVariable Long id) {
-
-    service.deletar(id);
-
-    return ResponseEntity.ok("Veiculo deletado com sucesso!");
-}
-}
-
