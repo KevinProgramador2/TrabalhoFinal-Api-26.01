@@ -59,3 +59,4 @@ public class VeiculoServices {
         repository.deleteById(id);
     }
 }
+
