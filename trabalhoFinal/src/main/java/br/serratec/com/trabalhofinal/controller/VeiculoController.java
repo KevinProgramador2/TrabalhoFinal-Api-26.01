@@ -1,5 +1,6 @@
 package br.serratec.com.trabalhofinal.controller;
 
+import br.serratec.com.trabalhofinal.dto.VeiculoDTO;
 import br.serratec.com.trabalhofinal.model.Veiculo;
 import br.serratec.com.trabalhofinal.services.VeiculoServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,31 +18,36 @@ public class VeiculoController {
     private VeiculoServices service;
 
     @PostMapping
-    public ResponseEntity<Veiculo> inserir(@RequestBody Veiculo veiculo) {
+    public ResponseEntity<Veiculo> inserir(@RequestBody VeiculoDTO veiculo) 
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+            .body(service.inserir(veiculo));
+}
                 .body(service.inserir(veiculo));
     }
 
+@GetMapping
+public ResponseEntity<List<Veiculo>> listar() {
     @GetMapping
     public ResponseEntity<List<Veiculo>> listar() {
 
         return ResponseEntity.ok(service.listar());
     }
 
-    @PutMapping("/{id}")
-    public Veiculo update(@PathVariable Long id,
-                          @RequestBody Veiculo veiculo) {
+@PutMapping("/{id}")
+public Veiculo update(@PathVariable Long id,
+                      @RequestBody Veiculo veiculo) {
 
-        return service.update(id, veiculo);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletar(@PathVariable Long id) {
-
-        service.deletar(id);
-
-        return ResponseEntity.ok("Veiculo deletado com sucesso!");
-    }
+    return service.update(id, veiculo);
 }
+
+@DeleteMapping("/{id}")
+public ResponseEntity<String> deletar(@PathVariable Long id) {
+
+    service.deletar(id);
+
+    return ResponseEntity.ok("Veiculo deletado com sucesso!");
+}
+}
+
