@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -11,27 +12,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
-
-        return http
-                .csrf(csrf -> csrf.disable())
-
-                .headers(headers ->
-                        headers.frameOptions(
-                                frame -> frame.disable()
-                        )
-                )
-
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**")
-                        .permitAll()
-
-                        .anyRequest()
-                        .permitAll()
-                )
-
-                .build();
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
+
 }
