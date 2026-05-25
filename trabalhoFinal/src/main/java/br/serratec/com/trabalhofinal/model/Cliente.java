@@ -36,6 +36,16 @@ public class Cliente {
     @Pattern(regexp = "\\d{11}", message = "CPF deve conter apenas números")
     private String cpf;
 
+    @NotBlank(message = "CEP é obrigatório")
+    @Size(min = 8, max = 8, message = "CEP deve ter 8 caracteres")
+    @Pattern(regexp = "\\d{8}", message = "CEP deve conter apenas números")
+    private String cep;
+
+    private String logradouro;
+    private String bairro;
+    private String cidade;
+    private String estado;
+
     public Cliente(Long id, String nome, String telefone, String email, String cpf) {
         this.id = id;
         this.nome = nome;
@@ -43,6 +53,17 @@ public class Cliente {
         this.email = email;
         this.cpf = cpf;
     }
+
+    
+
+    @Override
+    public String toString() {
+        return "Cliente [id=" + id + ", nome=" + nome + ", telefone=" + telefone + ", email=" + email + ", cpf=" + cpf
+                + ", cep=" + cep + ", logradouro=" + logradouro + ", bairro=" + bairro + ", cidade=" + cidade
+                + ", estado=" + estado + "]";
+    }
+
+
 
     public Long getId() {
         return id;
@@ -83,4 +104,46 @@ public class Cliente {
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
+    public String getLogradouro() {
+        return logradouro;
+    }
+
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    
 }
