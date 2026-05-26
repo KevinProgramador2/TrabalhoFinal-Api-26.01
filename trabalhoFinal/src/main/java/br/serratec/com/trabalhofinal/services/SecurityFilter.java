@@ -32,7 +32,6 @@ public class SecurityFilter extends OncePerRequestFilter {
         String token = recuperarToken(request);
 
         try {
-            // 🔹 ALTERAÇÃO 1: validação mais segura do token
             if (token != null && !token.isBlank()) {
 
                 String subject = JWT.require(Algorithm.HMAC256("minha-chave-secreta-super-protegida"))
@@ -52,7 +51,6 @@ public class SecurityFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception e) {
-            // 🔹 ALTERAÇÃO 2: evita quebrar a aplicação com token inválido
         }
 
         filterChain.doFilter(request, response);
@@ -61,7 +59,6 @@ public class SecurityFilter extends OncePerRequestFilter {
     private String recuperarToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
 
-        // 🔹 ALTERAÇÃO 3: validação correta do header
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return null;
         }
