@@ -1,6 +1,8 @@
 package br.serratec.com.trabalhofinal.services;
 
-import br.serratec.com.trabalhofinal.dto.VeiculoDTO;
+import br.serratec.com.trabalhofinal.dto.ClienteResponseDTO;
+import br.serratec.com.trabalhofinal.dto.VeiculoRequestDTO;
+import br.serratec.com.trabalhofinal.dto.VeiculoResponseDTO;
 import br.serratec.com.trabalhofinal.model.Cliente;
 import br.serratec.com.trabalhofinal.model.Veiculo;
 import br.serratec.com.trabalhofinal.repository.ClienteRepository;
@@ -19,41 +21,145 @@ public class VeiculoServices {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    public Veiculo inserir(VeiculoDTO dto){
-        Cliente cliente = clienteRepository.findById(dto.clienteId())
-            .orElseThrow(() -> new RuntimeException("Cliente nao encontrado"));
+ public VeiculoResponseDTO inserir(VeiculoRequestDTO dto) {
 
-        Veiculo veiculo = new Veiculo();
+    Cliente cliente = clienteRepository.findById(dto.clienteId())
+            .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
 
-        veiculo.setPlaca(dto.placa());
-        veiculo.setMarca(dto.marca());
-        veiculo.setModelo(dto.modelo());
-        veiculo.setAno(dto.ano());
-        veiculo.setCor(dto.cor());
+    Veiculo veiculo = new Veiculo();
 
-        veiculo.setCliente(cliente);
+    veiculo.setPlaca(dto.placa());
+    veiculo.setMarca(dto.marca());
+    veiculo.setModelo(dto.modelo());
+    veiculo.setAno(dto.ano());
+    veiculo.setCor(dto.cor());
+    veiculo.setCliente(cliente);
 
-        return repository.save(veiculo);
-    }
+    Veiculo veiculoSalvo = repository.save(veiculo);
 
-    public List<Veiculo> listar() {
-        return repository.findAll();
-    }
+    ClienteResponseDTO clienteDTO = new ClienteResponseDTO(
+            cliente.getId(),
+            cliente.getNome(),
+            cliente.getTelefone(),
+            cliente.getEmail(),
+            cliente.getCpf(),
+            cliente.getCep(),
+            cliente.getLogradouro(),
+            cliente.getBairro(),
+            cliente.getCidade(),
+            cliente.getEstado()
+    );
 
-    public Veiculo update(Long id, Veiculo veiculoAtualizado){
+    return new VeiculoResponseDTO(
+            veiculoSalvo.getId(),
+            veiculoSalvo.getPlaca(),
+            veiculoSalvo.getMarca(),
+            veiculoSalvo.getModelo(),
+            veiculoSalvo.getAno(),
+            veiculoSalvo.getCor(),
+            clienteDTO
+    );
+}
 
-        Veiculo veiculo = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Veiculo nao encontrado!"));
+    public List<VeiculoResponseDTO> listar() {
+    return repository.findAll()
+            .stream()
+            .map(veiculo -> new VeiculoResponseDTO(
+                    veiculo.getId(),
+                    veiculo.getPlaca(),
+                    veiculo.getMarca(),
+                    veiculo.getModelo(),
+                    veiculo.getAno(),
+                    veiculo.getCor(),
+                    new ClienteResponseDTO(
+                            veiculo.getCliente().getId(),
+                            veiculo.getCliente().getNome(),
+                            veiculo.getCliente().getTelefone(),
+                            veiculo.getCliente().getEmail(),
+                            veiculo.getCliente().getCpf(),
+                            veiculo.getCliente().getCep(),
+                            veiculo.getCliente().getLogradouro(),
+                            veiculo.getCliente().getBairro(),
+                            veiculo.getCliente().getCidade(),
+                            veiculo.getCliente().getEstado()
+                    )
+            ))
+            .toList();
+}
 
-        veiculo.setPlaca(veiculoAtualizado.getPlaca());
-        veiculo.setMarca(veiculoAtualizado.getMarca());
-        veiculo.setModelo(veiculoAtualizado.getModelo());
-        veiculo.setAno(veiculoAtualizado.getAno());
-        veiculo.setCor(veiculoAtualizado.getCor());
-        veiculo.setCliente(veiculoAtualizado.getCliente());
+    public VeiculoResponseDTO buscarPorId(Long id) {
+    Veiculo veiculo = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
 
-        return repository.save(veiculo);
-    }
+    Cliente cliente = veiculo.getCliente();
+
+    ClienteResponseDTO clienteDTO = new ClienteResponseDTO(
+            cliente.getId(),
+            cliente.getNome(),
+            cliente.getTelefone(),
+            cliente.getEmail(),
+            cliente.getCpf(),
+            cliente.getCep(),
+            cliente.getLogradouro(),
+            cliente.getBairro(),
+            cliente.getCidade(),
+            cliente.getEstado()
+    );
+
+    return new VeiculoResponseDTO(
+            veiculo.getId(),
+            veiculo.getPlaca(),
+            veiculo.getMarca(),
+            veiculo.getModelo(),
+            veiculo.getAno(),
+            veiculo.getCor(),
+            clienteDTO
+    );
+}
+
+   public VeiculoResponseDTO update(Long id, VeiculoRequestDTO dto) {
+
+    Veiculo veiculo = repository.findById(id)
+            .orElseThrow(() ->
+                    new RuntimeException("Veículo não encontrado!"));
+
+    Cliente cliente = clienteRepository.findById(dto.clienteId())
+            .orElseThrow(() ->
+                    new RuntimeException("Cliente não encontrado!"));
+
+    veiculo.setPlaca(dto.placa());
+    veiculo.setMarca(dto.marca());
+    veiculo.setModelo(dto.modelo());
+    veiculo.setAno(dto.ano());
+    veiculo.setCor(dto.cor());
+
+    veiculo.setCliente(cliente);
+
+    Veiculo veiculoUpdate = repository.save(veiculo);
+
+    ClienteResponseDTO clienteDTO = new ClienteResponseDTO(
+            cliente.getId(),
+            cliente.getNome(),
+            cliente.getTelefone(),
+            cliente.getEmail(),
+            cliente.getCpf(),
+            cliente.getCep(),
+            cliente.getLogradouro(),
+            cliente.getBairro(),
+            cliente.getCidade(),
+            cliente.getEstado()
+    );
+
+    return new VeiculoResponseDTO(
+            veiculoUpdate.getId(),
+            veiculoUpdate.getPlaca(),
+            veiculoUpdate.getMarca(),
+            veiculoUpdate.getModelo(),
+            veiculoUpdate.getAno(),
+            veiculoUpdate.getCor(),
+            clienteDTO
+    );
+}
 
     public void deletar(Long id){
         repository.deleteById(id);

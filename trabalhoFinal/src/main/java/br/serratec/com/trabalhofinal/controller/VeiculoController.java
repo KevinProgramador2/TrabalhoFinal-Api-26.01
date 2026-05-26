@@ -1,13 +1,16 @@
 package br.serratec.com.trabalhofinal.controller;
-import br.serratec.com.trabalhofinal.dto.VeiculoDTO;
-import br.serratec.com.trabalhofinal.model.Veiculo;
-import br.serratec.com.trabalhofinal.services.VeiculoServices;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import br.serratec.com.trabalhofinal.dto.VeiculoRequestDTO;
+import br.serratec.com.trabalhofinal.dto.VeiculoResponseDTO;
+import br.serratec.com.trabalhofinal.services.VeiculoServices;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/veiculos")
@@ -17,24 +20,33 @@ public class VeiculoController {
     private VeiculoServices service;
 
     @PostMapping
-    public ResponseEntity<Veiculo> inserir(@RequestBody VeiculoDTO veiculo) 
+    public ResponseEntity<VeiculoResponseDTO> inserir(
+            @Valid @RequestBody VeiculoRequestDTO dto) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.inserir(veiculo));
+                .body(service.inserir(dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<Veiculo>> listar() {
+    public ResponseEntity<List<VeiculoResponseDTO>> listar() {
 
         return ResponseEntity.ok(service.listar());
     }
 
-    @PutMapping("/{id}")
-    public Veiculo update(@PathVariable Long id,
-                          @RequestBody Veiculo veiculo) {
+    @GetMapping("/{id}")
+    public ResponseEntity<VeiculoResponseDTO> buscarPorId(
+            @PathVariable Long id) {
 
-        return service.update(id, veiculo);
+        return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<VeiculoResponseDTO> update(
+            @PathVariable Long id,
+            @Valid @RequestBody VeiculoRequestDTO dto) {
+
+        return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
@@ -42,7 +54,6 @@ public class VeiculoController {
 
         service.deletar(id);
 
-        return ResponseEntity.ok("Veiculo deletado com sucesso!");
+        return ResponseEntity.ok("Veículo deletado com sucesso!");
     }
 }
-

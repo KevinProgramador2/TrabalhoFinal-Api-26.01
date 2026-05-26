@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.serratec.com.trabalhofinal.model.Servico;
+import br.serratec.com.trabalhofinal.dto.ServicoRequestDTO;
+import br.serratec.com.trabalhofinal.dto.ServicoResponseDTO;
 import br.serratec.com.trabalhofinal.services.ServicoServices;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
+import jakarta.validation.Valid;;
 
 
 @RestController
@@ -22,7 +24,7 @@ public class ServicoController {
     private ServicoServices service;
 
     @PostMapping
-    public ResponseEntity<Servico> inserir(@RequestBody Servico servico) {
+    public ResponseEntity<ServicoResponseDTO> inserir(@Valid @RequestBody ServicoRequestDTO servico) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -30,9 +32,9 @@ public class ServicoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Servico> update(
+    public ResponseEntity<ServicoResponseDTO> update(
             @PathVariable Long id,
-            @RequestBody Servico servicoUpdate) {
+            @RequestBody ServicoRequestDTO servicoUpdate) {
 
         return ResponseEntity.ok(service.update(id, servicoUpdate));
     }

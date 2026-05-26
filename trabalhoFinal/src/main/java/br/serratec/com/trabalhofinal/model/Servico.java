@@ -1,66 +1,61 @@
 package br.serratec.com.trabalhofinal.model;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
-import br.serratec.com.trabalhofinal.enums.TipoServico;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Table(name = "servicos")
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Servico {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    
-    @Enumerated(EnumType.STRING)
-    private TipoServico descricao;
-    private BigDecimal valor;
-    private String tempoEstimado;
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
 
+@NotBlank(message = "Descrição")
+@Size(min = 5, max = 255, message = "Descrição:")
+@Column(nullable = false)
+private String descricao;
 
-    public Servico(TipoServico descricao, BigDecimal valor, String tempoEstimado) {
-        this.descricao = descricao;
-        this.valor = valor;
-        this.tempoEstimado = tempoEstimado;
-    }
+@DecimalMin(value = "0.01", message = "Valor")
+@Column(nullable = false, precision = 10, scale = 2)
+private BigDecimal valor;
 
+@Min(value = 1, message = "Tempo")
+@Column(nullable = false)
+private Integer tempoEstimadoMinutos;
 
-    @Override
-    public String toString() {
-        return "Servico [descricao=" + descricao + ", valor=" + valor + ", tempoEstimado=" + tempoEstimado + "]";
-    }
+@JsonIgnore
+@OneToMany(mappedBy = "servico", cascade = CascadeType.ALL, orphanRemoval = true)
+private Set<OrdemServicoItem> itens = new HashSet<>();
 
-
-    public TipoServico getDescricao() {
-        return descricao;
+public Servico(String descricao, BigDecimal valor, Integer tempoEstimadoMinutos) {
+this.descricao = descricao;
+this.valor = valor;
+this.tempoEstimadoMinutos = tempoEstimadoMinutos;
     }
-    public void setDescricao(TipoServico descricao) {
-        this.descricao = descricao;
-    }
-    public BigDecimal getValor() {
-        return valor;
-    }
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
-    public String getTempoEstimado() {
-        return tempoEstimado;
-    }
-    public void setTempoEstimado(String tempoEstimado) {
-        this.tempoEstimado = tempoEstimado;
-    }
-    public Long getId() {
-        return id;
-    }
-    
-
-    
 
 }

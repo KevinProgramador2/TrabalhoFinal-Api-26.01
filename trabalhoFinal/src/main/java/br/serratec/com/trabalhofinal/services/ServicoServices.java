@@ -2,6 +2,9 @@ package br.serratec.com.trabalhofinal.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import br.serratec.com.trabalhofinal.dto.ServicoRequestDTO;
+import br.serratec.com.trabalhofinal.dto.ServicoResponseDTO;
 import br.serratec.com.trabalhofinal.model.Servico;
 import br.serratec.com.trabalhofinal.repository.ServicoRepository;
 
@@ -11,18 +14,41 @@ public class ServicoServices {
     @Autowired
     private ServicoRepository repository;
 
-    public Servico inserir(Servico servico){
-        return repository.save(servico);
+    public ServicoResponseDTO inserir(ServicoRequestDTO servicoInserir){
+
+        Servico servico = new Servico();
+
+        servico.setDescricao(servicoInserir.descricao());
+        servico.setValor(servicoInserir.valor());
+        servico.setTempoEstimadoMinutos(servicoInserir.tempoEstimadoMinutos());
+
+        Servico servicoSalvo = repository.save(servico);
+
+        return new ServicoResponseDTO(
+            servicoSalvo.getId(),
+            servicoSalvo.getDescricao(),
+            servicoSalvo.getValor(),
+            servicoSalvo.getTempoEstimadoMinutos()
+        );
+
+        
     }
 
-    public Servico update(Long id, Servico servicoUpdate){
+    public ServicoResponseDTO update(Long id, ServicoRequestDTO servicoUpdate){
         Servico servico = repository.findById(id).orElseThrow(() -> new RuntimeException("Servico nao encontrado!"));
 
-        servico.setDescricao(servicoUpdate.getDescricao());
-        servico.setValor(servicoUpdate.getValor());
-        servico.setTempoEstimado(servicoUpdate.getTempoEstimado());
+        servico.setDescricao(servicoUpdate.descricao());
+        servico.setValor(servicoUpdate.valor());
+        servico.setTempoEstimadoMinutos(servicoUpdate.tempoEstimadoMinutos());
 
-        return repository.save(servico);
+        Servico servicoSalvo = repository.save(servico);
+
+        return new ServicoResponseDTO(
+            servicoSalvo.getId(),
+            servicoSalvo.getDescricao(),
+            servicoSalvo.getValor(),
+            servicoSalvo.getTempoEstimadoMinutos()
+        );
 
     }
     
