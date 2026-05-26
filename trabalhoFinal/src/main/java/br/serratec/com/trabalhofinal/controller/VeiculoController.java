@@ -18,7 +18,7 @@ public class VeiculoController {
     private VeiculoServices service;
 
     @PostMapping
-    public ResponseEntity<Veiculo> inserir(@RequestBody VeiculoDTO veiculo) 
+    public ResponseEntity<Veiculo> inserir(@RequestBody VeiculoDTO veiculo) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -44,5 +44,5 @@ public class VeiculoController {
         service.deletar(id);
 
         return ResponseEntity.ok("Veiculo deletado com sucesso!");
-    }
+       }
 }

@@ -26,16 +26,33 @@ public class SecurityFilter extends OncePerRequestFilter {
     private ClienteRepository repository;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
         String token = recuperarToken(request);
 
-        if (token != null) {
-            String subject = JWT.require(Algorithm.HMAC256("minha-chave-secreta-super-protegida"))
-                    .withIssuer("api-mecanica").build().verify(token).getSubject();
+        try {
+            // 🔹 ALTERAÇÃO 1: validação mais segura do token
+            if (token != null && !token.isBlank()) {
 
-            UserDetails usuario = (UserDetails) repository.findAll(subject).orElseThrow();
-            var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                String subject = JWT.require(Algorithm.HMAC256("minha-chave-secreta-super-protegida"))
+                        .withIssuer("api-mecanica")
+                        .build()
+                        .verify(token)
+                        .getSubject();
+
+                UserDetails usuario = (UserDetails) repository
+                        .findByEmail(subject)
+                        .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        usuario, null, usuario.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+
+        } catch (Exception e) {
+            // 🔹 ALTERAÇÃO 2: evita quebrar a aplicação com token inválido
         }
 
         filterChain.doFilter(request, response);
@@ -43,7 +60,12 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private String recuperarToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-        if (authHeader == null) return null;
-        return authHeader.replace("Bearer ", "");
+
+        // 🔹 ALTERAÇÃO 3: validação correta do header
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
+
+        return authHeader.substring(7);
     }
 }
