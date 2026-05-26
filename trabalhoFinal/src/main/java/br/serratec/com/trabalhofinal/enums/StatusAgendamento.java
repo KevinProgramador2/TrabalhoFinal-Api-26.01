@@ -1,5 +1,8 @@
 package br.serratec.com.trabalhofinal.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum StatusAgendamento {
     AGENDADO("Agendado"),
     CANCELADO("Cancelado"),
@@ -11,8 +14,18 @@ public enum StatusAgendamento {
         this.descricao = descricao;
     }
 
-    @com.fasterxml.jackson.annotation.JsonValue // Adicione isso!
+    @JsonValue
     public String getDescricao() {
         return descricao;
+    }
+
+    @JsonCreator
+    public static StatusAgendamento fromValue(String value) {
+        for (StatusAgendamento status : StatusAgendamento.values()) {
+            if (status.descricao.equalsIgnoreCase(value)) {
+                return status;
+            }
+        }
+        return null;
     }
 }

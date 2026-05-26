@@ -12,7 +12,7 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
 
    boolean existsByDataAndHoraAndStatusAgendamentoNot(
         LocalDate data, 
-        LocalTime hora, 
+        LocalTime hora,
         StatusAgendamento status
     );
 

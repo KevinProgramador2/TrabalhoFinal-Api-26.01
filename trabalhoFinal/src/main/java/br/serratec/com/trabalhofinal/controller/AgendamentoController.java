@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.serratec.com.trabalhofinal.dto.AgendamentoResponseDTO;
@@ -19,8 +22,11 @@ public class AgendamentoController {
     private AgendamentoServices service;
 
     @PostMapping
-    public AgendamentoResponseDTO criar(@RequestBody Agendamento agendamento) {
-        return service.criar(agendamento);
+    public ResponseEntity<AgendamentoResponseDTO> salvar(@RequestBody Agendamento agendamento) {
+        // CHAME O MÉTODO 'criar', NÃO O 'verificarDisponibilidade'
+        AgendamentoResponseDTO response = service.criar(agendamento);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/disponibilidade")
@@ -32,7 +38,8 @@ public class AgendamentoController {
                 LocalDate.parse(data),
                 LocalTime.parse(hora)
         );
-
         return Map.of("disponivel", !ocupado);
     }
+
+
 }
