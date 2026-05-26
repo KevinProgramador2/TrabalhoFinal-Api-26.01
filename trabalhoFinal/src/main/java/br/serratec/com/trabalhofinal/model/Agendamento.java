@@ -19,12 +19,12 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cliente_id" )
     @NotNull(message = "Cliente é obrigatório")
     private Cliente cliente;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "veiculo_id")
     @NotNull(message = "Veículo é obrigatório")
     private Veiculo veiculo;
