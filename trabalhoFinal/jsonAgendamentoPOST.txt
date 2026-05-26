@@ -1,0 +1,24 @@
+{
+  "cliente": {
+    "nome": "João da Silva",
+    "telefone": "24998877665",
+    "email": "joao.silva@email.com",
+    "cpf": "12345678901",
+    "cep": "25600123",
+    "logradouro": "Rua do Imperador",
+    "bairro": "Centro",
+    "cidade": "Petrópolis",
+    "estado": "RJ"
+  },
+  "veiculo": {
+    "placa": "ABC1D23",
+    "marca": "Volkswagen",
+    "modelo": "Gol",
+    "ano": 2022,
+    "cor": "Prata"
+  },
+  "data": "2026-05-30",
+  "hora": "14:30:00",
+  "servico": "Troca de Óleo",
+  "statusAgendamento": "AGENDADO"
+}

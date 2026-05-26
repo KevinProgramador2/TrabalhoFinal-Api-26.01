@@ -4,9 +4,14 @@ import br.serratec.com.trabalhofinal.enums.StatusAgendamento;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Getter
+@Setter 
 @Entity
 public class Agendamento {
 
@@ -14,12 +19,12 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cliente_id" )
     @NotNull(message = "Cliente é obrigatório")
     private Cliente cliente;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "veiculo_id")
     @NotNull(message = "Veículo é obrigatório")
     private Veiculo veiculo;
