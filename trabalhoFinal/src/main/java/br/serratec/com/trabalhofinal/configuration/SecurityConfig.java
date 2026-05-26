@@ -29,27 +29,26 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http
                 .csrf(csrf -> csrf.disable())
 
-                .headers(headers ->
-                        headers.frameOptions(
-                                frame -> frame.disable()
-                        )
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable())
                 )
+
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers(org.springframework.http.HttpMethod.POST, "/clientes").permitAll()
+                        // Libera clientes
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/clientes").permitAll()
+
+                        // H2 Console - acesso permitido
                         .requestMatchers("/h2-console/**").permitAll()
 
+                        // Trava o resto
                         .anyRequest().authenticated()
-
                 )
                 .httpBasic(org.springframework.security.config.Customizer.withDefaults())
                 .build();
-
     }
 }
