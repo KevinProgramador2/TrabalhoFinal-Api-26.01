@@ -21,6 +21,7 @@ public class ClienteController {
     @PostMapping
     public ResponseEntity<Cliente> inserir(@RequestBody Cliente cliente) {
         return  ResponseEntity.status(HttpStatus.CREATED).body(service.inserir(cliente));
+
     }
 
     @GetMapping

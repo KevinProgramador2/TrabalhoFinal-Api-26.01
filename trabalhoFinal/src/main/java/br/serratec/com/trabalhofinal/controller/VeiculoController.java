@@ -1,4 +1,5 @@
 package br.serratec.com.trabalhofinal.controller;
+
 import br.serratec.com.trabalhofinal.dto.VeiculoDTO;
 import br.serratec.com.trabalhofinal.model.Veiculo;
 import br.serratec.com.trabalhofinal.services.VeiculoServices;
@@ -17,7 +18,7 @@ public class VeiculoController {
     private VeiculoServices service;
 
     @PostMapping
-    public ResponseEntity<Veiculo> inserir(@RequestBody VeiculoDTO veiculo) 
+    public ResponseEntity<Veiculo> inserir(@RequestBody VeiculoDTO veiculo) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -32,7 +33,7 @@ public class VeiculoController {
 
     @PutMapping("/{id}")
     public Veiculo update(@PathVariable Long id,
-                          @RequestBody Veiculo veiculo) {
+            @RequestBody Veiculo veiculo) {
 
         return service.update(id, veiculo);
     }
@@ -43,6 +44,5 @@ public class VeiculoController {
         service.deletar(id);
 
         return ResponseEntity.ok("Veiculo deletado com sucesso!");
-    }
+       }
 }
-

@@ -1,4 +1,5 @@
 package br.serratec.com.trabalhofinal.model;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -54,16 +55,12 @@ public class Cliente {
         this.cpf = cpf;
     }
 
-    
-
     @Override
     public String toString() {
         return "Cliente [id=" + id + ", nome=" + nome + ", telefone=" + telefone + ", email=" + email + ", cpf=" + cpf
                 + ", cep=" + cep + ", logradouro=" + logradouro + ", bairro=" + bairro + ", cidade=" + cidade
                 + ", estado=" + estado + "]";
     }
-
-
 
     public Long getId() {
         return id;
@@ -145,5 +142,4 @@ public class Cliente {
         this.estado = estado;
     }
 
-    
 }
