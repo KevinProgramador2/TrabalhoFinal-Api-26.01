@@ -53,7 +53,6 @@ public class Veiculo {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-
     public Veiculo() {
     }
 
