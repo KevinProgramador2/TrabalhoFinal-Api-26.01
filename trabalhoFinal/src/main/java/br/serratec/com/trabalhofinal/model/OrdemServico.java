@@ -18,44 +18,81 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "ordens_servico")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class OrdemServico {
 
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-@ManyToOne(fetch = FetchType.EAGER)
-@JoinColumn(name = "cliente_id", nullable = false)
-private Cliente cliente;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Cliente cliente;
 
-@ManyToOne(fetch = FetchType.EAGER)
-@JoinColumn(name = "veiculo_id", nullable = false)
-private Veiculo veiculo;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "veiculo_id", nullable = false)
+    private Veiculo veiculo;
 
-@NotNull(message = "Status é obrigatório")
-@Enumerated(EnumType.STRING)
-@Column(nullable = false)
-private StatusOS status;
+    @NotNull(message = "Status é obrigatório")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusOS status;
 
-@OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-private Set<OrdemServicoItem> itens = new HashSet<>();
+    @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<OrdemServicoItem> itens = new HashSet<>();
 
+    public OrdemServico() {
+    }
 
+    public OrdemServico(Cliente cliente, Long id, StatusOS status, Veiculo veiculo) {
+        this.cliente = cliente;
+        this.id = id;
+        this.status = status;
+        this.veiculo = veiculo;
+    }
 
-public OrdemServico(Cliente cliente, Veiculo veiculo, StatusOS status) {
-this.cliente = cliente;
-this.veiculo = veiculo;
-this.status = status;
-}
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Veiculo getVeiculo() {
+        return veiculo;
+    }
+
+    public void setVeiculo(Veiculo veiculo) {
+        this.veiculo = veiculo;
+    }
+
+    public StatusOS getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusOS status) {
+        this.status = status;
+    }
+
+    public Set<OrdemServicoItem> getItens() {
+        return itens;
+    }
+
+    public void setItens(Set<OrdemServicoItem> itens) {
+        this.itens = itens;
+    }
+
+    
 }
