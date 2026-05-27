@@ -11,5 +11,4 @@ public record AgendamentoResponseDTO(
         String servico,
         StatusAgendamento statusAgendamento
       ) {
-
 }

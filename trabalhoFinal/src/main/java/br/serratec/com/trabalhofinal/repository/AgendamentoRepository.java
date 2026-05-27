@@ -10,10 +10,17 @@ import br.serratec.com.trabalhofinal.model.Agendamento;
 
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
 
-   boolean existsByDataAndHoraAndStatusAgendamentoNot(
-        LocalDate data, 
+    boolean existsByDataAndHoraAndStatusAgendamentoNot(
+        LocalDate data,
         LocalTime hora,
         StatusAgendamento status
     );
 
+    // Check por cliente: mesmo CPF no mesmo horário
+    boolean existsByDataAndHoraAndClienteCpfAndStatusAgendamentoNot(
+        LocalDate data,
+        LocalTime hora,
+        String cpf,
+        StatusAgendamento status
+    );
 }

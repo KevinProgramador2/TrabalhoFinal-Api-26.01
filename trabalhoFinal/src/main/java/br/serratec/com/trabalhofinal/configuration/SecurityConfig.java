@@ -14,41 +14,31 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user = User.withUsername("admin")
-                .password(bCryptPasswordEncoder().encode("123456"))
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }
+@Bean
+        public InMemoryUserDetailsManager userDetailsService() {
+                UserDetails user = User.withUsername("admin")
+                        .password(bCryptPasswordEncoder().encode("123456"))
+                        .roles("USER")
+                        .build();
+                return new InMemoryUserDetailsManager(user);
+        }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public BCryptPasswordEncoder bCryptPasswordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-        return http
-                .csrf(csrf -> csrf.disable())
-
-                .headers(headers -> headers
-                        .frameOptions(frame -> frame.disable())
-                )
-
-                .authorizeHttpRequests(auth -> auth
-                        // Libera clientes
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/clientes").permitAll()
-
-                        // H2 Console - acesso permitido
-                        .requestMatchers("/h2-console/**").permitAll()
-
-                        // Trava o resto
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(org.springframework.security.config.Customizer.withDefaults())
-                .build();
-    }
+        @Bean
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                return http
+                        .csrf(csrf -> csrf.disable())
+                        .headers(headers ->
+                                headers.frameOptions(frame -> frame.disable())
+                        )
+                        .authorizeHttpRequests(auth -> auth
+                                .requestMatchers("/h2-console/**").permitAll()
+                                .anyRequest().permitAll()
+                        )
+                        .build();
+        }
 }
