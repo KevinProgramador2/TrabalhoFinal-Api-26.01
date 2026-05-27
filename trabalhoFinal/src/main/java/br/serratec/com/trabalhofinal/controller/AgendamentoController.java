@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +33,8 @@ public class AgendamentoController {
             @RequestParam String data,
             @RequestParam String hora) {
 
-        boolean ocupado = service.verificarDisponibilidade(
-                LocalDate.parse(data),
-                LocalTime.parse(hora)
-        );
+        boolean ocupado = service.verificarDisponibilidade(LocalDate.parse(data), LocalTime.parse(hora));
         return Map.of("disponivel", !ocupado);
     }
-
 
 }

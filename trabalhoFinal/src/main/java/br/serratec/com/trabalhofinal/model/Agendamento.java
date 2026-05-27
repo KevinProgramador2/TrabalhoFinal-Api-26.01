@@ -11,20 +11,21 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
-@Setter 
+@Setter
 @Entity
+@Table(name = "agendamento")
 public class Agendamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "cliente_id" )
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
     @NotNull(message = "Cliente é obrigatório")
     private Cliente cliente;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "veiculo_id")
     @NotNull(message = "Veículo é obrigatório")
     private Veiculo veiculo;
