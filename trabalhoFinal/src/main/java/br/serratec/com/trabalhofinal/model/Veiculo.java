@@ -31,7 +31,7 @@ public class Veiculo {
     private String placa;
 
     @NotBlank(message = "Marca é obrigatória")
-    @Size(min = 2, max = 50, message = "Digite a marca do veiculo")git
+    @Size(min = 2, max = 50, message = "Digite a marca do veiculo")
     private String marca;
 
     @NotBlank(message = "Modelo é obrigatório")
@@ -52,7 +52,6 @@ public class Veiculo {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
-
 
     public Veiculo() {
     }
