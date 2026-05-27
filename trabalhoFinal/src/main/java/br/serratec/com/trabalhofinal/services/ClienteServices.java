@@ -28,7 +28,7 @@ public class ClienteServices {
 
     public Cliente inserir(@org.checkerframework.checker.nullness.qual.MonotonicNonNull ClienteRequestDTO cliente) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "https://viacep.com.br/ws/" + cliente.getCep() + "/json/";
+        String url = "https://viacep.com.br/ws/" + cliente.getClass()+ "/json/";
         ViaCepDTO endereco = restTemplate.getForObject(url, ViaCepDTO.class);
 
         if (endereco == null || (endereco.erro() != null && endereco.erro())) {
@@ -44,7 +44,17 @@ public class ClienteServices {
         // cliente.setSenha(encoder.encode(cliente.getSenha()));
 
 
-        Cliente clienteSalvo = repository.save(cliente);
+        Cliente clienteSalvo = repository.save(new Cliente()
+                cliente.getNome(),
+                cliente.getTelefone(),
+                cliente.getEmail(),
+                cliente.getCpf(),
+                cliente.getCep(),
+                cliente.getLogradouro(),
+                cliente.getBairro(),
+                cliente.getCidade(),
+                cliente.getEstado()
+        );
 
         config.sendMail(cliente.getEmail(), "Cadastro de novo usuário",
                 "Olá " + clienteSalvo.getNome() + ", seu cadastro foi realizado com sucesso!");
