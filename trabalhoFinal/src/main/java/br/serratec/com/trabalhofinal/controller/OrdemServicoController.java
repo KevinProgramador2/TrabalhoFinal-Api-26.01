@@ -1,6 +1,7 @@
 package br.serratec.com.trabalhofinal.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.serratec.com.trabalhofinal.dto.OrdemServicoRequestDTO;
@@ -18,6 +19,12 @@ public class OrdemServicoController {
     public OrdemServico inserir(@RequestBody OrdemServicoRequestDTO dto) {
         return service.inserir(dto);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrdemServico> buscar(@PathVariable Long id) {
+
+    return ResponseEntity.ok(service.buscarPorIdOrdemServico(id));
+}
 
     @PutMapping("/{id}")
     public OrdemServico update(@PathVariable Long id,

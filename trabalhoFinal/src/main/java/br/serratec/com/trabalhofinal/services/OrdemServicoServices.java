@@ -7,6 +7,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.serratec.com.trabalhofinal.configuration.MailConfig;
 import br.serratec.com.trabalhofinal.dto.OrdemServicoItemRequestDTO;
 import br.serratec.com.trabalhofinal.dto.OrdemServicoRequestDTO;
 import br.serratec.com.trabalhofinal.model.Cliente;
@@ -33,6 +34,9 @@ public class OrdemServicoServices {
 
     @Autowired
     private ServicoRepository servicoRepository;
+
+    @Autowired
+    private MailConfig config;
 
     public OrdemServico inserir(OrdemServicoRequestDTO dto) {
 
@@ -82,8 +86,30 @@ public class OrdemServicoServices {
 
         os.setItens(itens);
 
+        BigDecimal valorTotal = itens.stream()
+        .map(OrdemServicoItem::getSubtotal)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        os.setValorTotal(valorTotal);
+
         return repository.save(os);
     }
+    
+     public OrdemServico buscarPorIdOrdemServico(Long id) {
+
+    OrdemServico os = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("OS não encontrada"));
+
+    BigDecimal valorTotal = os.getItens().stream()
+            .map(OrdemServicoItem::getSubtotal)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    os.setValorTotal(valorTotal);
+
+    return os;
+}
+
+
 
     public OrdemServico update(Long id, OrdemServicoRequestDTO dto) {
 
@@ -93,8 +119,16 @@ public class OrdemServicoServices {
 
         os.setStatus(dto.status());
 
+        config.sendMail(
+                os.getCliente().getEmail(),
+                "Atualização da Ordem de Serviço",
+                "A ordem de serviço com ID " + os.getId() + " foi atualizada para o status: " + os.getStatus()
+        );
+
         return repository.save(os);
     }
+
+
 
     public Set<OrdemServico> listar() {
 
