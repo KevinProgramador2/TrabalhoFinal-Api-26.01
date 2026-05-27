@@ -28,6 +28,23 @@ public class AgendamentoServices {
         this.veiculoRepository = veiculoRepository;
     }
 
+    public AgendamentoResponseDTO cancelar(Long id) {
+        Agendamento agendamento = agendamentoRepository.findById(id).orElse(null);
+        if (agendamento == null) {
+            return null;
+        }
+        agendamento.setStatusAgendamento(StatusAgendamento.CANCELADO);
+        Agendamento atualizado = agendamentoRepository.save(agendamento);
+        return new AgendamentoResponseDTO(
+                atualizado.getId(),
+                atualizado.getCliente().getNome(),
+                atualizado.getVeiculo().getPlaca(),
+                atualizado.getData().toString(),
+                atualizado.getHora().toString(),
+                atualizado.getServico(),
+                atualizado.getStatusAgendamento());
+    }
+
     @Transactional
     public AgendamentoResponseDTO criar(Agendamento agendamento) {
 
@@ -67,8 +84,7 @@ public class AgendamentoServices {
                 salvo.getData().toString(),
                 salvo.getHora().toString(),
                 salvo.getServico(),
-                salvo.getStatusAgendamento()
-        );
+                salvo.getStatusAgendamento());
     }
 
     public boolean verificarDisponibilidade(LocalDate data, LocalTime hora) {
