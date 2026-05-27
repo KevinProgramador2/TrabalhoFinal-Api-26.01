@@ -1,8 +1,10 @@
 package br.serratec.com.trabalhofinal.controller;
 
+import br.serratec.com.trabalhofinal.dto.ClienteRequestDTO;
 import br.serratec.com.trabalhofinal.dto.ClienteResponseDTO;
-import br.serratec.com.trabalhofinal.model.Cliente;
 import br.serratec.com.trabalhofinal.services.ClienteServices;
+import jakarta.validation.Valid;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +21,8 @@ public class ClienteController {
     private ClienteServices service;
 
     @PostMapping
-    public ResponseEntity<Cliente> inserir(@RequestBody Cliente cliente) {
+    public ResponseEntity<ClienteResponseDTO> inserir(@RequestBody ClienteRequestDTO cliente) {
         return  ResponseEntity.status(HttpStatus.CREATED).body(service.inserir(cliente));
-
     }
 
     @GetMapping
@@ -31,12 +32,12 @@ public class ClienteController {
 
     
     @PutMapping("/{id}")
-    public Cliente update(@PathVariable Long id, @RequestBody ClienteResponseDTO dto) {
-        
-        Cliente cliente = service.update(id,dto);
+        public ResponseEntity<ClienteResponseDTO> update(
+        @PathVariable Long id,
+        @Valid @RequestBody ClienteRequestDTO dto) {
 
-        return cliente;
-    }
+    return ResponseEntity.ok(service.update(id, dto));
+}
 
     @DeleteMapping("/{id}")
     public void deletar(@PathVariable Long id){

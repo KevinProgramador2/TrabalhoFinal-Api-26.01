@@ -14,42 +14,31 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user = User.withUsername("admin")
-                .password(bCryptPasswordEncoder().encode("123456"))
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }
+@Bean
+        public InMemoryUserDetailsManager userDetailsService() {
+                UserDetails user = User.withUsername("admin")
+                        .password(bCryptPasswordEncoder().encode("123456"))
+                        .roles("USER")
+                        .build();
+                return new InMemoryUserDetailsManager(user);
+        }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public BCryptPasswordEncoder bCryptPasswordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    SecurityFilterChain securityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
-
-        return http
-                .csrf(csrf -> csrf.disable())
-
-                .headers(headers ->
-                        headers.frameOptions(
-                                frame -> frame.disable()
+        @Bean
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                return http
+                        .csrf(csrf -> csrf.disable())
+                        .headers(headers ->
+                                headers.frameOptions(frame -> frame.disable())
                         )
-                )
-                .authorizeHttpRequests(auth -> auth
-                .requestMatchers(org.springframework.http.HttpMethod.POST, "/clientes").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
-
-                        .anyRequest().authenticated()
-
-                )
-                .httpBasic(org.springframework.security.config.Customizer.withDefaults())
-                .build();
-
-    }
+                        .authorizeHttpRequests(auth -> auth
+                                .requestMatchers("/h2-console/**").permitAll()
+                                .anyRequest().permitAll()
+                        )
+                        .build();
+        }
 }

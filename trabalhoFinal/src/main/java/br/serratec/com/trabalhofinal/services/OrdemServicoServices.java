@@ -1,17 +1,17 @@
 package br.serratec.com.trabalhofinal.services;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.serratec.com.trabalhofinal.dto.ItemOrdemServicoDTO;
-import br.serratec.com.trabalhofinal.dto.OrdemServicoDTO;
+import br.serratec.com.trabalhofinal.dto.OrdemServicoItemRequestDTO;
+import br.serratec.com.trabalhofinal.dto.OrdemServicoRequestDTO;
 import br.serratec.com.trabalhofinal.model.Cliente;
-import br.serratec.com.trabalhofinal.model.ItemOrdemServico;
 import br.serratec.com.trabalhofinal.model.OrdemServico;
+import br.serratec.com.trabalhofinal.model.OrdemServicoItem;
 import br.serratec.com.trabalhofinal.model.Servico;
 import br.serratec.com.trabalhofinal.model.Veiculo;
 import br.serratec.com.trabalhofinal.repository.ClienteRepository;
@@ -26,21 +26,23 @@ public class OrdemServicoServices {
     private OrdemServicoRepository repository;
 
     @Autowired
-    private ServicoRepository servicoRepository;
-
-    @Autowired
     private ClienteRepository clienteRepository;
 
     @Autowired
     private VeiculoRepository veiculoRepository;
 
-    public OrdemServico inserir(OrdemServicoDTO dto) {
+    @Autowired
+    private ServicoRepository servicoRepository;
+
+    public OrdemServico inserir(OrdemServicoRequestDTO dto) {
 
         Cliente cliente = clienteRepository.findById(dto.clienteId())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+                .orElseThrow(() ->
+                        new RuntimeException("Cliente não encontrado"));
 
         Veiculo veiculo = veiculoRepository.findById(dto.veiculoId())
-                .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
+                .orElseThrow(() ->
+                        new RuntimeException("Veículo não encontrado"));
 
         OrdemServico os = new OrdemServico();
 
@@ -48,19 +50,19 @@ public class OrdemServicoServices {
         os.setVeiculo(veiculo);
         os.setStatus(dto.status());
 
-        List<ItemOrdemServico> itens = new ArrayList<>();
+        Set<OrdemServicoItem> itens = new HashSet<>();
 
-        for (ItemOrdemServicoDTO itemDTO : dto.itens()) {
+        for (OrdemServicoItemRequestDTO itemDTO : dto.itens()) {
 
             Servico servico = servicoRepository.findById(itemDTO.servicoId())
-                    .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
+                    .orElseThrow(() ->
+                            new RuntimeException("Serviço não encontrado"));
 
-            ItemOrdemServico item = new ItemOrdemServico();
+            OrdemServicoItem item = new OrdemServicoItem();
 
             item.setOrdemServico(os);
             item.setServico(servico);
-
-            item.setValorServico(itemDTO.valorServico());
+            item.setQuantidade(itemDTO.quantidade());
 
             BigDecimal desconto = itemDTO.desconto() == null
                     ? BigDecimal.ZERO
@@ -68,13 +70,12 @@ public class OrdemServicoServices {
 
             item.setDesconto(desconto);
 
-            item.setQuantidade(itemDTO.quantidade());
-
-            BigDecimal subtotal = itemDTO.valorServico()
+            BigDecimal subtotal = servico.getValor()
                     .multiply(BigDecimal.valueOf(itemDTO.quantidade()))
                     .subtract(desconto);
 
-            item.setSubtotal(subtotal);
+        item.setValor(servico.getValor());
+        item.setSubtotal(subtotal);
 
             itens.add(item);
         }
@@ -84,13 +85,35 @@ public class OrdemServicoServices {
         return repository.save(os);
     }
 
-    public OrdemServico update(Long id, OrdemServicoDTO dto) {
+    public OrdemServico update(Long id, OrdemServicoRequestDTO dto) {
 
-        OrdemServico ordemServico = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ordem de Serviço não encontrada"));
+        OrdemServico os = repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Ordem de Serviço não encontrada"));
 
-        ordemServico.setStatus(dto.status());
+        os.setStatus(dto.status());
 
-        return repository.save(ordemServico);
+        return repository.save(os);
+    }
+
+    public Set<OrdemServico> listar() {
+
+        return new HashSet<>(repository.findAll());
+    }
+
+    public OrdemServico buscarPorId(Long id) {
+
+        return repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Ordem de Serviço não encontrada"));
+    }
+
+    public void deletar(Long id) {
+
+        OrdemServico os = repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Ordem de Serviço não encontrada"));
+
+        repository.delete(os);
     }
 }
