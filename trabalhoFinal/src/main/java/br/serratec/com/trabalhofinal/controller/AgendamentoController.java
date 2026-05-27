@@ -29,6 +29,14 @@ public class AgendamentoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<AgendamentoResponseDTO> atualizar(@PathVariable Long id, @RequestBody Agendamento agendamento) {
+        // CHAME O MÉTODO 'criar', NÃO O 'verificarDisponibilidade'
+        AgendamentoResponseDTO response = service.criar(agendamento);
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/disponibilidade")
     public Map<String, Boolean> verificarDisponibilidade(
             @RequestParam String data,
@@ -41,5 +49,13 @@ public class AgendamentoController {
         return Map.of("disponivel", !ocupado);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AgendamentoResponseDTO> cancelar(@PathVariable Long id) {
+        AgendamentoResponseDTO response = service.cancelar(id);
+        if (response == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
+    }
 
 }

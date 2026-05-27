@@ -26,7 +26,8 @@ public class AgendamentoServices {
         }
 
         if (agendamento.getStatusAgendamento() == null) {
-            throw new RuntimeException("Status do agendamento inválido ou não informado. Use: Agendado, Concluído ou Cancelado.");
+            throw new RuntimeException(
+                    "Status do agendamento inválido ou não informado. Use: Agendado, Concluído ou Cancelado.");
         }
 
         Agendamento salvo = repository.save(agendamento);
@@ -38,11 +39,29 @@ public class AgendamentoServices {
                 salvo.getData().toString(),
                 salvo.getHora().toString(),
                 salvo.getServico(),
-                salvo.getStatusAgendamento()
-        );
+                salvo.getStatusAgendamento());
     }
 
     public boolean verificarDisponibilidade(LocalDate data, LocalTime hora) {
         return repository.existsByDataAndHoraAndStatusAgendamentoNot(data, hora, StatusAgendamento.CANCELADO);
+    }
+
+    public AgendamentoResponseDTO cancelar(Long id) {
+        Agendamento agendamento = repository.findById(id).orElse(null);
+        if (agendamento == null) {
+            return null;
+        }
+        agendamento.setStatusAgendamento(StatusAgendamento.CANCELADO);
+        Agendamento atualizado = repository.save(agendamento);
+
+        return new AgendamentoResponseDTO(
+                atualizado.getId(),
+                atualizado.getCliente().getNome(),
+                atualizado.getVeiculo().getPlaca(),
+                atualizado.getData().toString(),
+                atualizado.getHora().toString(),
+                atualizado.getServico(),
+                atualizado.getStatusAgendamento());
+
     }
 }
