@@ -7,6 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TrabalhoFinalApplication {
 
     public static void main(String[] args) {
+
+        System.out.println("ENV EMAIL -> " + System.getenv("USUARIO_EMAIL"));
+
         SpringApplication.run(TrabalhoFinalApplication.class, args);
     }
+
 }

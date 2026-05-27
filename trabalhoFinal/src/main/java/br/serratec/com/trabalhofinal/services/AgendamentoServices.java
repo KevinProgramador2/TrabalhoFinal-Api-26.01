@@ -28,10 +28,12 @@ public class AgendamentoServices {
         if (agendamento.getStatusAgendamento() == null) {
             throw new RuntimeException("Status do agendamento inválido ou não informado. Use: Agendado, Concluído ou Cancelado.");
         }
+        
+        agendamento.getVeiculo().setCliente(agendamento.getCliente());
 
         Agendamento salvo = repository.save(agendamento);
 
-        return new AgendamentoResponseDTO(
+         return new AgendamentoResponseDTO(
                 salvo.getId(),
                 salvo.getCliente().getNome(),
                 salvo.getVeiculo().getPlaca(),

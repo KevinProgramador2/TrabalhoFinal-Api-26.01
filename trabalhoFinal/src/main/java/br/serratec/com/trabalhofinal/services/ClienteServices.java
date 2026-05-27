@@ -1,9 +1,11 @@
 package br.serratec.com.trabalhofinal.services;
 
 import br.serratec.com.trabalhofinal.configuration.MailConfig;
+import br.serratec.com.trabalhofinal.dto.ClienteRequestDTO;
 import br.serratec.com.trabalhofinal.dto.ClienteResponseDTO;
 import br.serratec.com.trabalhofinal.model.Cliente;
 import br.serratec.com.trabalhofinal.repository.ClienteRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,7 @@ public class ClienteServices {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
-    public Cliente inserir(Cliente cliente) {
+    public Cliente inserir(@org.checkerframework.checker.nullness.qual.MonotonicNonNull ClienteRequestDTO cliente) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://viacep.com.br/ws/" + cliente.getCep() + "/json/";
         ViaCepDTO endereco = restTemplate.getForObject(url, ViaCepDTO.class);
@@ -65,7 +67,7 @@ public class ClienteServices {
         return "***." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-**";
     }
 
-    public Cliente update(Long id, ClienteResponseDTO dto) {
+    public Cliente update(Long id, @Valid @org.checkerframework.checker.nullness.qual.MonotonicNonNull ClienteRequestDTO dto) {
         Cliente cliente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado!"));
 

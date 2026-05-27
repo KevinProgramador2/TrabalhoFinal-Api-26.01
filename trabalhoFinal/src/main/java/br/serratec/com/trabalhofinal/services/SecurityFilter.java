@@ -1,6 +1,7 @@
 package br.serratec.com.trabalhofinal.services;
 
 import br.serratec.com.trabalhofinal.repository.ClienteRepository;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.FilterChain;
@@ -19,8 +20,6 @@ import java.io.IOException;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private TokenService tokenService;
 
     @Autowired
     private ClienteRepository repository;
