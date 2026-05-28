@@ -1,5 +1,6 @@
 package br.serratec.com.trabalhofinal.model;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -75,6 +76,10 @@ private String cidade;
 @Column(nullable = false)
 private String estado;
 
+@OneToMany(mappedBy = "cliente")
+private List<Avaliacao> avaliacoes;
+
+
 @JsonIgnore
 @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 private Set<Veiculo> veiculos = new HashSet<>();
@@ -93,5 +98,7 @@ return "Cliente [id=" + id + ", nome=" + nome + ", telefone=" + telefone + ", em
 + ", cep=" + cep + ", logradouro=" + logradouro + ", bairro=" + bairro + ", cidade=" + cidade
 + ", estado=" + estado + "]";
 }
+
+
 
 }
