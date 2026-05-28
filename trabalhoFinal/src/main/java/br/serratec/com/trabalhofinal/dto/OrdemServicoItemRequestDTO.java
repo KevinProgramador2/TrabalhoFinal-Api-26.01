@@ -14,5 +14,4 @@ public record OrdemServicoItemRequestDTO(
         @NotNull(message = "Valor") @DecimalMin(value = "0", message = "O Valor não pode ser negativo") BigDecimal valor,
 
         @NotNull(message = "Desconto") @DecimalMin(value = "0", message = "O Desconto não pode ser negativo") BigDecimal desconto) {
-
 }
