@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.serratec.com.trabalhofinal.configuration.MailConfig;
 import br.serratec.com.trabalhofinal.dto.OrdemServicoItemRequestDTO;
 import br.serratec.com.trabalhofinal.dto.OrdemServicoRequestDTO;
 import br.serratec.com.trabalhofinal.model.Cliente;
@@ -36,7 +37,9 @@ public class OrdemServicoServices {
         @Autowired
         private ServicoRepository servicoRepository;
 
-        @Transactional
+        @Autowired
+        private MailConfig config;
+
         public OrdemServico inserir(OrdemServicoRequestDTO dto) {
 
                 Cliente cliente = clienteRepository.findById(dto.clienteId())
@@ -99,10 +102,10 @@ public class OrdemServicoServices {
                 os.setVeiculo(veiculo);
                 os.setStatus(dto.status());
 
-                os.getItens().clear();
-
                 Set<OrdemServicoItem> itens = new HashSet<>();
+
                 for (OrdemServicoItemRequestDTO itemDTO : dto.itens()) {
+
                         Servico servico = servicoRepository.findById(itemDTO.servicoId())
                                         .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
 
@@ -123,7 +126,19 @@ public class OrdemServicoServices {
 
                 os.setItens(itens);
 
+                config.sendMail(
+                                os.getCliente().getEmail(),
+                                "Atualização da Ordem de Serviço",
+                                "A ordem de serviço com ID " + os.getId() + " foi atualizada para o status: "
+                                                + os.getStatus());
+
                 return repository.save(os);
+        }
+
+        public OrdemServico buscarPorIdOrdemServico(Long id) {
+
+                return repository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("OS não encontrada"));
         }
 
         public Set<OrdemServico> listar() {
