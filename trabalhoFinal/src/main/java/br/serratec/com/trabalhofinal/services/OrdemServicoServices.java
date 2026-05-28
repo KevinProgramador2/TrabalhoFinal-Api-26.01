@@ -99,7 +99,39 @@ public class OrdemServicoServices {
                         .orElseThrow(() ->
                         new RuntimeException("Ordem de Serviço não encontrada"));
 
+                Cliente cliente = clienteRepository.findById(dto.clienteId())
+                                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
+                Veiculo veiculo = veiculoRepository.findById(dto.veiculoId())
+                                .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
+
+                os.setCliente(cliente);
+                os.setVeiculo(veiculo);
                 os.setStatus(dto.status());
+
+                Set<OrdemServicoItem> itens = new HashSet<>();
+
+                for (OrdemServicoItemRequestDTO itemDTO : dto.itens()) {
+
+                        Servico servico = servicoRepository.findById(itemDTO.servicoId())
+                                        .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
+
+                        BigDecimal desconto = itemDTO.desconto() != null ? itemDTO.desconto() : BigDecimal.ZERO;
+                        BigDecimal valorUnitario = servico.getValor();
+                        BigDecimal subtotal = valorUnitario.multiply(BigDecimal.valueOf(itemDTO.quantidade()))
+                                        .subtract(desconto);
+
+                        OrdemServicoItem item = new OrdemServicoItem();
+                        item.setOrdemServico(os);
+                        item.setServico(servico);
+                        item.setQuantidade(itemDTO.quantidade());
+                        item.setDesconto(desconto);
+                        item.setValor(valorUnitario);
+                        item.setSubtotal(subtotal);
+                        itens.add(item);
+                }
+
+                os.setItens(itens);
 
                 config.sendMail(
                         os.getCliente().getEmail(),
@@ -113,7 +145,7 @@ public class OrdemServicoServices {
                 public OrdemServico buscarPorIdOrdemServico(Long id) {
 
                         OrdemServico os = repository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("OS não encontrada"));
+                                .orElseThrow(() -> new RuntimeException("Ordem de serviço não encontrada"));
 
                         BigDecimal valorTotal = os.getItens().stream()
                                 .map(OrdemServicoItem::getSubtotal)
