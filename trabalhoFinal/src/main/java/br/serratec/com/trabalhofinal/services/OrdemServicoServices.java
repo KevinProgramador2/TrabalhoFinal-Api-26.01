@@ -81,16 +81,23 @@ public class OrdemServicoServices {
                         itens.add(item);
                 }
 
+                        BigDecimal valorTotal = itens.stream()
+                        .map(OrdemServicoItem::getSubtotal)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                        os.setValorTotal(valorTotal);
+
                 os.setItens(itens);
 
                 return repository.save(os);
         }
 
         @Transactional
-        public OrdemServico update(Long id, OrdemServicoRequestDTO dto) {
+         public OrdemServico update(Long id, OrdemServicoRequestDTO dto) {
 
                 OrdemServico os = repository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Ordem de Serviço não encontrada"));
+                        .orElseThrow(() ->
+                        new RuntimeException("Ordem de Serviço não encontrada"));
 
                 Cliente cliente = clienteRepository.findById(dto.clienteId())
                                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
@@ -127,30 +134,33 @@ public class OrdemServicoServices {
                 os.setItens(itens);
 
                 config.sendMail(
-                                os.getCliente().getEmail(),
-                                "Atualização da Ordem de Serviço",
-                                "A ordem de serviço com ID " + os.getId() + " foi atualizada para o status: "
-                                                + os.getStatus());
+                        os.getCliente().getEmail(),
+                        "Atualização da Ordem de Serviço",
+                        "A ordem de serviço com ID " + os.getId() + " foi atualizada para o status: " + os.getStatus()
+                );
 
                 return repository.save(os);
         }
 
-        public OrdemServico buscarPorIdOrdemServico(Long id) {
+                public OrdemServico buscarPorIdOrdemServico(Long id) {
 
-                return repository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("OS não encontrada"));
-        }
+                        OrdemServico os = repository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Ordem de serviço não encontrada"));
+
+                        BigDecimal valorTotal = os.getItens().stream()
+                                .map(OrdemServicoItem::getSubtotal)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                        os.setValorTotal(valorTotal);
+
+                        return os;
+                }
 
         public Set<OrdemServico> listar() {
 
-                return new HashSet<>(repository.findAll());
+        return new HashSet<>(repository.findAll());
         }
 
-        public OrdemServico buscarPorId(Long id) {
-
-                return repository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Ordem de Serviço não encontrada"));
-        }
 
         public List<OrdemServico> listarPorVeiculo(Long veiculoId) {
                 return repository.findByVeiculoId(veiculoId);
