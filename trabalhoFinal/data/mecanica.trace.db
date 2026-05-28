@@ -1,0 +1,3 @@
+2026-05-27 21:06:38.401251-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "CLIENTE" not found; SQL statement:
+SELECT * FROM CLIENTE [42102-240]
