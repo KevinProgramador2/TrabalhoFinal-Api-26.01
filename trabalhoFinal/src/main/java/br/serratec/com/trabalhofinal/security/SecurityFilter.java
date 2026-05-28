@@ -1,4 +1,4 @@
-package br.serratec.com.trabalhofinal.services;
+package br.serratec.com.trabalhofinal.security;
 
 import br.serratec.com.trabalhofinal.repository.ClienteRepository;
 
@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.token.TokenService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -21,7 +22,7 @@ import java.io.IOException;
 public class SecurityFilter extends OncePerRequestFilter {
 
     @Autowired
-    private TokenService tokenService;
+    private JwtUtil jwtUtil;
 
     @Autowired
     private ClienteRepository repository;
