@@ -58,16 +58,18 @@ public class JwtUtil {
     public Claims getClaims(String token) {
 
         //versao antiga
-//        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
 
 //==================================================
 
         //versao nova do Jwt
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
+//        return Jwts.parser()
+//                .verifyWith(secretKey)
+//                .build()
+//                .parseSignedClaims(token)
+//                .getPayload();
+//    }
+
+}
 }
 

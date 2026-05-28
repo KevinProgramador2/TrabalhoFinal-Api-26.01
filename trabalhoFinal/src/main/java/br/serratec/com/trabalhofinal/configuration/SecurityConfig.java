@@ -1,44 +1,93 @@
 package br.serratec.com.trabalhofinal.configuration;
 
+import br.serratec.com.trabalhofinal.security.JwtAuthenticationFilter;
+import br.serratec.com.trabalhofinal.security.JwtAuthorizationFilter;
+import br.serratec.com.trabalhofinal.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@Configuration
+import java.util.Arrays;
+
 @EnableWebSecurity
+@Configuration
 public class SecurityConfig {
 
-@Bean
-        public InMemoryUserDetailsManager userDetailsService() {
-                UserDetails user = User.withUsername("admin")
-                        .password(bCryptPasswordEncoder().encode("123456"))
-                        .roles("USER")
-                        .build();
-                return new InMemoryUserDetailsManager(user);
-        }
+        @Autowired
+        private JwtUtil jwtUtil;
+
+        @Autowired
+        private UserDetailsService userDetailsService;
 
         @Bean
-        public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                http.csrf(csrf -> csrf.disable())
+                        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                        .authorizeHttpRequests(requests -> requests
+                                .requestMatchers(HttpMethod.GET,"/funcionarios").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/perfis").permitAll()
+                                .requestMatchers("/h2-console/**").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/usuarios").permitAll()
+
+                                .requestMatchers(HttpMethod.GET,"/usuarios").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/funcionarios/*/foto").hasAnyRole("ADMIN", "COMPRAS","RH")
+                                .requestMatchers(HttpMethod.POST, "/funcionarios").hasAnyRole("ADMIN", "COMPRAS","RH")
+                                .anyRequest().authenticated()
+                        )
+                        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
+
+
+                http.addFilterBefore(new JwtAuthenticationFilter(
+                                authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil),
+                        UsernamePasswordAuthenticationFilter.class);
+
+                http.addFilterBefore(new JwtAuthorizationFilter(
+                                authenticationManager(http.getSharedObject(AuthenticationConfiguration.class)), jwtUtil, userDetailsService),
+                        UsernamePasswordAuthenticationFilter.class);
+
+                return http.build();
+        }
+
+
+
+
+        @Bean
+        BCryptPasswordEncoder criptografar() {
                 return new BCryptPasswordEncoder();
         }
 
         @Bean
-        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-                return http
-                        .csrf(csrf -> csrf.disable())
-                        .headers(headers ->
-                                headers.frameOptions(frame -> frame.disable())
-                        )
-                        .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/h2-console/**").permitAll()
-                                .anyRequest().permitAll()
-                        )
-                        .build();
+        AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+                throws Exception {
+                return authenticationConfiguration.getAuthenticationManager();
         }
+
+        @Bean
+        CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration corsConfiguration = new CorsConfiguration();
+                corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:2000"));
+                corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", corsConfiguration.applyPermitDefaultValues());
+                return source;
+        }
+
 }
