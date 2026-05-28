@@ -80,7 +80,7 @@
                         cliente.getNome(),
                         cliente.getTelefone(),
                         cliente.getEmail(),
-                        cliente.getCpf(),
+                        mascaraCpf(cliente.getCpf()),
                         cliente.getCep(),
                         cliente.getEstado(),
                         cliente.getCidade(),
