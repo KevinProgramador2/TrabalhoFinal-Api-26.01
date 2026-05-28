@@ -9,16 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record ServicoRequestDTO(
-        @NotBlank(message = "Descrição")
-        @Size(min = 5, max = 255, message = "Descrição:")
-        String descricao,
-
-        @NotNull(message = "Valor")
-        @DecimalMin(value = "0.01", message = "Valor:")
-        BigDecimal valor,
-
-        @NotNull(message = "Tempo estimado")
-        @Min(value = 1, message = "Tempo estimado:")
-        Integer tempoEstimadoMinutos
-    ){
+        @NotBlank(message = "Descrição") @Size(min = 5, max = 255, message = "Descrição:") String descricao,
+        @NotNull(message = "Valor") @DecimalMin(value = "0.01", message = "Valor:") BigDecimal valor,
+        @NotNull(message="Tempo estimado") @Min(value=1,message="Tempo estimado:") Integer tempoEstimadoMinutos) {
 }

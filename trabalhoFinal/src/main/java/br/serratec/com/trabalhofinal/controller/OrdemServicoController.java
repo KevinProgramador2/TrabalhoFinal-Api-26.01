@@ -28,6 +28,7 @@ public class OrdemServicoController {
     public OrdemServico update(
             @PathVariable Long id,
             @RequestBody OrdemServicoRequestDTO dto) {
+            
 
         return service.update(id, dto);
     }
