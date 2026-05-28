@@ -12,10 +12,8 @@ import org.springframework.stereotype.Service;
 import br.serratec.com.trabalhofinal.configuration.MailConfig;
 import br.serratec.com.trabalhofinal.dto.UsuarioRequestDTO;
 import br.serratec.com.trabalhofinal.dto.UsuarioResponseDTO;
-import br.serratec.com.trabalhofinal.exception.NotFoundException;
 import br.serratec.com.trabalhofinal.model.Usuario;
 import br.serratec.com.trabalhofinal.model.UsuarioPerfil;
-import br.serratec.com.trabalhofinal.repository.PerfilRepository;
 import br.serratec.com.trabalhofinal.repository.UsuarioPerfilRepository;
 import br.serratec.com.trabalhofinal.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
@@ -75,6 +73,7 @@ public class UsuarioService {
         // }).collect(Collectors.toList());
 
         usuarioPerfilRepository.saveAll(dto.getUsuarioPerfis());
+
 
         // config.sendEmail(dto.getEmail(), "Cadastro de novo usuário", usuarioSalvo.toString());
 

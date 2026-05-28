@@ -334,3 +334,6 @@ Caused by: org.h2.jdbc.JdbcSQLNonTransientConnectionException: The connection wa
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "HTE_FOTO_VEICULO" already exists; SQL statement:
 create global temporary table HTE_foto_veiculo(rn_ integer not null, id bigint, veiculo_id bigint, caminhoArquivo varchar(255), nomeArquivo varchar(255), tipoConteudo varchar(255), tipo enum ('ANTES','DEPOIS'), primary key (rn_)) transactional [42101-240]
 >>>>>>> cf590957fecd0e23d63b6a6c0b32511e7c8d48c5
+2026-05-28 15:35:08.604339-03:00 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]USUARIO"; expected "UPDATE"; SQL statement:
+USUARIO [42001-240]
