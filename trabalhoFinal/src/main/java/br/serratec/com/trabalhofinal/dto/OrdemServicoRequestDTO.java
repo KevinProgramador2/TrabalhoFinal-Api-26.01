@@ -8,18 +8,12 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record OrdemServicoRequestDTO(
-        @NotNull(message = "Cliente ID")
-        Long clienteId,
+        @NotNull(message = "Cliente ID") Long clienteId,
 
-        @NotNull(message = "Veículo ID")
-        Long veiculoId,
+        @NotNull(message = "Veículo ID") Long veiculoId,
 
-        @NotNull(message = "Status")
-        StatusOS status,
+        @NotNull(message = "Status Recente") StatusOS status,
 
-        @NotEmpty(message = "Deve conter pelo menos um serviço")
-        @Valid
-        List<OrdemServicoItemRequestDTO> itens
-    ){
+        @NotEmpty(message = "Deve conter pelo menos um serviço") @Valid List<OrdemServicoItemRequestDTO> itens) {
 
 }

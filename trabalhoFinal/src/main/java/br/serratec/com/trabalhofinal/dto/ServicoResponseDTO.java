@@ -2,5 +2,6 @@ package br.serratec.com.trabalhofinal.dto;
 
 import java.math.BigDecimal;
 
-public record ServicoResponseDTO(Long id, String descricao, BigDecimal valor, Integer tempoEstimadoMinutos) {
+public record ServicoResponseDTO(Long id, String descricao, BigDecimal valor,
+        Integer tempoEstimadoMinutos) {
 }

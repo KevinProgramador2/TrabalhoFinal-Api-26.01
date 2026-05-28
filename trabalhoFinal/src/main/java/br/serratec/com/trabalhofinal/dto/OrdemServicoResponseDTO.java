@@ -7,12 +7,11 @@ import java.util.List;
 import br.serratec.com.trabalhofinal.enums.StatusOS;
 
 public record OrdemServicoResponseDTO(
-        Long id, String numero, ClienteResponseDTO cliente, VeiculoResponseDTO veiculo, StatusOS status,
-                
+        Long id, String numero, ClienteResponseDTO cliente,
+        VeiculoResponseDTO veiculo, StatusOS status,
+
         List<OrdemServicoItemResponseDTO> itens,
         BigDecimal valorTotal,
         LocalDateTime dataCriacao,
-        LocalDateTime dataAtualizacao
-    ){
-        
+        LocalDateTime dataAtualizacao) {
 }
