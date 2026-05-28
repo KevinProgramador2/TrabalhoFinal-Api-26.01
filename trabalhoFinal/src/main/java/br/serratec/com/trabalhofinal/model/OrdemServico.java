@@ -1,5 +1,6 @@
 package br.serratec.com.trabalhofinal.model;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,9 +45,15 @@ public class OrdemServico {
     @OneToMany(mappedBy = "ordemServico", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<OrdemServicoItem> itens = new HashSet<>();
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal valorTotal = BigDecimal.ZERO;
+    
     public OrdemServico() {
     }
 
+    public void setValorTotal(BigDecimal valorTotal) {
+    this.valorTotal = valorTotal;
+    }
     public OrdemServico(Cliente cliente, Long id, StatusOS status, Veiculo veiculo) {
         this.cliente = cliente;
         this.id = id;

@@ -35,7 +35,7 @@ public class HistoricoManutencaoController {
 
     @GetMapping("{id}")
     public ResponseEntity<OrdemServico> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.buscarPorId(id));
+        return ResponseEntity.ok(service.buscarPorIdOrdemServico(id));
     }
 
     @PostMapping

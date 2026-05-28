@@ -81,76 +81,54 @@ public class OrdemServicoServices {
                         itens.add(item);
                 }
 
+                        BigDecimal valorTotal = itens.stream()
+                        .map(OrdemServicoItem::getSubtotal)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                        os.setValorTotal(valorTotal);
+
                 os.setItens(itens);
 
                 return repository.save(os);
         }
 
         @Transactional
-        public OrdemServico update(Long id, OrdemServicoRequestDTO dto) {
+         public OrdemServico update(Long id, OrdemServicoRequestDTO dto) {
 
                 OrdemServico os = repository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Ordem de Serviço não encontrada"));
+                        .orElseThrow(() ->
+                        new RuntimeException("Ordem de Serviço não encontrada"));
 
-                Cliente cliente = clienteRepository.findById(dto.clienteId())
-                                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-
-                Veiculo veiculo = veiculoRepository.findById(dto.veiculoId())
-                                .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
-
-                os.setCliente(cliente);
-                os.setVeiculo(veiculo);
                 os.setStatus(dto.status());
 
-                Set<OrdemServicoItem> itens = new HashSet<>();
-
-                for (OrdemServicoItemRequestDTO itemDTO : dto.itens()) {
-
-                        Servico servico = servicoRepository.findById(itemDTO.servicoId())
-                                        .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
-
-                        BigDecimal desconto = itemDTO.desconto() != null ? itemDTO.desconto() : BigDecimal.ZERO;
-                        BigDecimal valorUnitario = servico.getValor();
-                        BigDecimal subtotal = valorUnitario.multiply(BigDecimal.valueOf(itemDTO.quantidade()))
-                                        .subtract(desconto);
-
-                        OrdemServicoItem item = new OrdemServicoItem();
-                        item.setOrdemServico(os);
-                        item.setServico(servico);
-                        item.setQuantidade(itemDTO.quantidade());
-                        item.setDesconto(desconto);
-                        item.setValor(valorUnitario);
-                        item.setSubtotal(subtotal);
-                        itens.add(item);
-                }
-
-                os.setItens(itens);
-
                 config.sendMail(
-                                os.getCliente().getEmail(),
-                                "Atualização da Ordem de Serviço",
-                                "A ordem de serviço com ID " + os.getId() + " foi atualizada para o status: "
-                                                + os.getStatus());
+                        os.getCliente().getEmail(),
+                        "Atualização da Ordem de Serviço",
+                        "A ordem de serviço com ID " + os.getId() + " foi atualizada para o status: " + os.getStatus()
+                );
 
                 return repository.save(os);
         }
 
-        public OrdemServico buscarPorIdOrdemServico(Long id) {
+                public OrdemServico buscarPorIdOrdemServico(Long id) {
 
-                return repository.findById(id)
+                        OrdemServico os = repository.findById(id)
                                 .orElseThrow(() -> new RuntimeException("OS não encontrada"));
-        }
+
+                        BigDecimal valorTotal = os.getItens().stream()
+                                .map(OrdemServicoItem::getSubtotal)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                        os.setValorTotal(valorTotal);
+
+                        return os;
+                }
 
         public Set<OrdemServico> listar() {
 
-                return new HashSet<>(repository.findAll());
+        return new HashSet<>(repository.findAll());
         }
 
-        public OrdemServico buscarPorId(Long id) {
-
-                return repository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Ordem de Serviço não encontrada"));
-        }
 
         public List<OrdemServico> listarPorVeiculo(Long veiculoId) {
                 return repository.findByVeiculoId(veiculoId);
