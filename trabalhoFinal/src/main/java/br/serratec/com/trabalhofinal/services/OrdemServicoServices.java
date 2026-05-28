@@ -37,10 +37,10 @@ public class OrdemServicoServices {
         @Autowired
         private ServicoRepository servicoRepository;
 
-    @Autowired
-    private MailConfig config;
+        @Autowired
+        private MailConfig config;
 
-    public OrdemServico inserir(OrdemServicoRequestDTO dto) {
+        public OrdemServico inserir(OrdemServicoRequestDTO dto) {
 
                 Cliente cliente = clienteRepository.findById(dto.clienteId())
                                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
@@ -89,30 +89,8 @@ public class OrdemServicoServices {
         @Transactional
         public OrdemServico update(Long id, OrdemServicoRequestDTO dto) {
 
-        BigDecimal valorTotal = itens.stream()
-        .map(OrdemServicoItem::getSubtotal)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        os.setValorTotal(valorTotal);
-
-        return repository.save(os);
-    }
-    
-     public OrdemServico buscarPorIdOrdemServico(Long id) {
-
-    OrdemServico os = repository.findById(id)
-            .orElseThrow(() -> new RuntimeException("OS não encontrada"));
-
-    BigDecimal valorTotal = os.getItens().stream()
-            .map(OrdemServicoItem::getSubtotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    os.setValorTotal(valorTotal);
-
-    return os;
-}
-
-
+                OrdemServico os = repository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Ordem de Serviço não encontrada"));
 
                 Cliente cliente = clienteRepository.findById(dto.clienteId())
                                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
@@ -124,18 +102,12 @@ public class OrdemServicoServices {
                 os.setVeiculo(veiculo);
                 os.setStatus(dto.status());
 
-        config.sendMail(
-                os.getCliente().getEmail(),
-                "Atualização da Ordem de Serviço",
-                "A ordem de serviço com ID " + os.getId() + " foi atualizada para o status: " + os.getStatus()
-        );
+                Set<OrdemServicoItem> itens = new HashSet<>();
 
-        return repository.save(os);
-    }
+                for (OrdemServicoItemRequestDTO itemDTO : dto.itens()) {
 
-
-
-    public Set<OrdemServico> listar() {
+                        Servico servico = servicoRepository.findById(itemDTO.servicoId())
+                                        .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
 
                         BigDecimal desconto = itemDTO.desconto() != null ? itemDTO.desconto() : BigDecimal.ZERO;
                         BigDecimal valorUnitario = servico.getValor();
@@ -154,7 +126,19 @@ public class OrdemServicoServices {
 
                 os.setItens(itens);
 
+                config.sendMail(
+                                os.getCliente().getEmail(),
+                                "Atualização da Ordem de Serviço",
+                                "A ordem de serviço com ID " + os.getId() + " foi atualizada para o status: "
+                                                + os.getStatus());
+
                 return repository.save(os);
+        }
+
+        public OrdemServico buscarPorIdOrdemServico(Long id) {
+
+                return repository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("OS não encontrada"));
         }
 
         public Set<OrdemServico> listar() {
