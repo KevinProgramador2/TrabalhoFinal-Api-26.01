@@ -14,18 +14,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import br.serratec.com.trabalhofinal.enums.TipoFoto;
 import br.serratec.com.trabalhofinal.model.FotoVeiculo;
 import br.serratec.com.trabalhofinal.services.FotoVeiculoServices;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import br.serratec.com.trabalhofinal.dto.FotoUploadSchema;
 
 @RestController
 @RequestMapping("/veiculos")
@@ -34,20 +28,13 @@ public class FotoVeiculoController {
     @Autowired
     private FotoVeiculoServices service;
 
-    @Operation(
-        requestBody = @RequestBody(
-            content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
-                schema = @Schema(implementation = FotoUploadSchema.class))
-        )
-    )
-    @PostMapping(value = "/{id}/fotos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/{id}/fotos")
     public ResponseEntity<FotoVeiculo> upload(
             @PathVariable Long id,
-            @RequestPart("arquivo") MultipartFile arquivo,
-            @RequestPart("tipo") String tipo) throws IOException {
+            @RequestParam("arquivo") MultipartFile arquivo,
+            @RequestParam("tipo") TipoFoto tipo) throws IOException {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.salvar(id, arquivo, TipoFoto.valueOf(tipo)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(id, arquivo, tipo));
     }
 
     @GetMapping("/{id}/fotos")
