@@ -52,9 +52,9 @@ public class SecurityConfig {
                                         "/swagger-ui/**",
                                         "/swagger-ui.html"
                                 ).permitAll()
-                                .requestMatchers(HttpMethod.GET,"/usuarios").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/funcionarios/*/foto").hasAnyRole("ADMIN", "COMPRAS","RH")
-                                .requestMatchers(HttpMethod.POST, "/funcionarios").hasAnyRole("ADMIN", "COMPRAS","RH")
+                                .requestMatchers(HttpMethod.GET,"/usuarios").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/funcionarios/*/foto").hasAnyAuthority("ADMIN", "COMPRAS","RH")
+                                .requestMatchers(HttpMethod.POST, "/funcionarios").hasAnyAuthority("ADMIN", "COMPRAS","RH")
                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
